@@ -48,10 +48,9 @@ def init_db():
         )
     """)
 
-    # Create default admin if not exists
+    # Create default admin
     cursor.execute("SELECT * FROM users WHERE role='admin'")
-    admin = cursor.fetchone()
-    if not admin:
+    if not cursor.fetchone():
         cursor.execute("""
             INSERT INTO users (name, email, password, role)
             VALUES (?, ?, ?, ?)
@@ -60,7 +59,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Initialize DB on startup
 init_db()
 
 # -------------------------------
@@ -162,7 +160,16 @@ def dashboard():
     """, (session["user_id"],)).fetchall()
 
     conn.close()
-    return render_template("dashboard.html", orders=orders, name=session["name"])
+
+    # 🔹 PAYMENT ENABLED ONLY IF ANY ORDER IS COMPLETED
+    payment_allowed = any(order["status"] == "Completed" for order in orders)
+
+    return render_template(
+        "dashboard.html",
+        orders=orders,
+        name=session["name"],
+        payment_allowed=payment_allowed
+    )
 
 # -------------------------------
 # ADMIN DASHBOARD
