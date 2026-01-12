@@ -1,2 +1,0 @@
-# SmartWash
-SmartWash Flask Application
