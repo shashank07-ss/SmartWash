@@ -136,7 +136,7 @@ def dashboard():
 
         pricing = {
             "Wash": 50,
-            "Dry": 30,
+            "Dry": 35,
             "Iron": 20
         }
 
